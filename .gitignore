@@ -60,6 +60,7 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
+manage-vm/
 
 # Sphinx documentation
 docs/_build/
