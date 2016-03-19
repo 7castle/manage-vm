@@ -2,4 +2,6 @@ from django.shortcuts import render
 
 def index(request):
     return render(request, 'index.html')
-# Create your views here.
+
+def create_vm(request):
+  return render(request, 'create.html')
