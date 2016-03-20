@@ -7,6 +7,9 @@ def index(request):
 def manage(request):
   return render(request,'manage.html')
 
+def machine(request, machine_name):
+  return render(request,'machine.html')
+
 def create_vm(request):
   if request.method == 'POST':
     vm_form = VM_Form(data=request.POST)
