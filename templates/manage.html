@@ -31,6 +31,12 @@
             </div>
             <!-- /.row -->
             <div class="row">
+              {% if not machine %}
+                <div class="alert alert-warning">
+                  You do not have any machines.
+                  <a href="/create" class=alert-link> Click here to create one </a>
+                </div>
+              {% endif %}
               {% for machine in machines %}
                 <div class="col-lg-4">
                     <div class="panel panel-default">
