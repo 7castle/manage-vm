@@ -28,7 +28,7 @@ def create_vm(request):
       vm.disk = disk
       vm.nic = nic
       vm.save()
-
+      print('Success')
   else:
     vm_form = VM_Form()
     disk_form = Disk_Form()

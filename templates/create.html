@@ -383,7 +383,7 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                   <h2>VM Information </h2>
-                                    <form role="form">
+                                    <form action="/create/" method="post" role="form">
                                         {% csrf_token %}
                                         {{ vm_form|bootstrap }}
                                 </div>
