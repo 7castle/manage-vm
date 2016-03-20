@@ -18,6 +18,7 @@ class VM_Form(forms.ModelForm):
     exclude = ['user','cluster','disk','nic']
     labels = {
       'vm_name': 'Name',
+      'memory': 'Memory (GB)',
     }
     widgets = {
       'vm_name': forms.TextInput(attrs={'placeholder': 'Name of Machine'}),
@@ -38,6 +39,9 @@ class Disk_Form(forms.ModelForm):
   class Meta:
     model = Disk
     exclude = ['storage_domain','status','interface']
+    labels = {
+      'size': 'Size (GB)',
+    }
     widgets = {
       'disk_name': forms.TextInput(attrs={'placeholder': 'Name of Disk'}),
       'size': forms.NumberInput(attrs={'value': 1}),
