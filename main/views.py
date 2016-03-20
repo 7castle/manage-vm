@@ -4,6 +4,9 @@ from .forms import *
 def index(request):
     return render(request, 'index.html')
 
+def manage(request):
+  return render(request,'manage.html')
+
 def create_vm(request):
   if request.method == 'POST':
     vm_form = VM_Form(data=request.POST)
