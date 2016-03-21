@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from .forms import *
+from .models import *
 
 def index(request):
-    return render(request, 'index.html')
+  return render(request, 'index.html')
 
 def manage(request):
-  return render(request,'manage.html')
+  machines = VM.objects.all()
+  return render(request,'manage.html',{'machines': machines})
 
 def machine(request, machine_name):
   return render(request,'machine.html')

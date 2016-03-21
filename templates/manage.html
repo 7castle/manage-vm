@@ -31,7 +31,7 @@
             </div>
             <!-- /.row -->
             <div class="row">
-              {% if not machine %}
+              {% if not machines %}
                 <div class="alert alert-warning">
                   You do not have any machines.
                   <a href="/create" class=alert-link> Click here to create one </a>
@@ -41,11 +41,16 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                                {{ machine.vm_name }}
+                          <a href="/machine/{{machine.vm_name}}">{{ machine.vm_name }}</a>
                         </div>
                         <div class="panel-body">
                           <p> {{machine.description }} </p>
-                        </div>
+                          <ul>
+                            <li>Memory: {{ machine.memory }} </li>
+                            <li>Cores: {{ machine.cores }} </li>
+                            <li>Disk Size: {{ machine.disk.size }} </li>
+                          </ul>  
+                      </div>
                     </div>
                 </div>
                 {% if forloop.counter|divisibleby:3 %}
