@@ -41,14 +41,15 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                          <a href="/machine/{{machine.vm_name}}">{{ machine.vm_name }}</a>
+                          <a href="/machine/{{machine.hostname}}">{{ machine.hostname }}</a>
+                                {{ machine.hostname }}
                         </div>
                         <div class="panel-body">
                           <p> {{machine.description }} </p>
                           <ul>
                             <li>Memory: {{ machine.memory }} </li>
                             <li>Cores: {{ machine.cores }} </li>
-                            <li>Disk Size: {{ machine.disk.size }} </li>
+                            <li>Disk Size: {{ machine.disk }} </li>
                           </ul>  
                       </div>
                     </div>
