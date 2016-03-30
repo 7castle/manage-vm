@@ -31,7 +31,7 @@
             </div>
             <!-- /.row -->
             <div class="row">
-              {% if not machine %}
+              {% if not machines %}
                 <div class="alert alert-warning">
                   You do not have any machines.
                   <a href="/create" class=alert-link> Click here to create one </a>
@@ -41,7 +41,7 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                                {{ machine.vm_name }}
+                                {{ machine.hostname }}
                         </div>
                         <div class="panel-body">
                           <p> {{machine.description }} </p>
