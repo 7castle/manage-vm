@@ -13,6 +13,7 @@ class VM(models.Model):
   disk = models.PositiveIntegerField()
   description = models.CharField(max_length=200)
   ip = models.CharField(max_length=15)
+  status = models.CharField(max_length=20)
 
   def __unicode__(self):
     return u'%s' % self.hostname
