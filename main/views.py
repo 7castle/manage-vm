@@ -1,11 +1,18 @@
 from django.shortcuts import render
 from .forms import *
+from .models import *
+from django.shortcuts import get_object_or_404
 
 def index(request):
   return render(request, 'index.html')
 
 def manage(request):
-  return render(request,'manage.html')
+  machines = VM.objects.all()
+  return render(request,'manage.html',{'machines': machines})
+
+def machine(request, machine_name):
+    machine = get_object_or_404(VM, hostname=machine_name) 
+    return render(request,'machine.html',{'machine': machine})
 
 def create_vm(request):
   if request.method == 'POST':
