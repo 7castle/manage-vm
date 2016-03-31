@@ -16,3 +16,9 @@ class VM(models.Model):
 
   def __unicode__(self):
     return u'%s' % self.hostname
+
+def Limits(models.Model):
+    memory = models.PositiveIntegerField()
+    swap = models.PositiveIntegerField()
+    cores = models.PositiveSmallIntegerField()
+    disk = models.PositiveSmallIntegerField()
