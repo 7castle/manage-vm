@@ -42,12 +42,13 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                           <a href="/machine/{{machine.hostname}}">{{ machine.hostname }}</a>
-                                {{ machine.hostname }}
                         </div>
                         <div class="panel-body">
                           <p> {{machine.description }} </p>
                           <ul>
+                            <li>IP: {{machine.ip}} </li>
                             <li>Memory: {{ machine.memory }} </li>
+                            <li>Swap: {{machine.swap}} </li>
                             <li>Cores: {{ machine.cores }} </li>
                             <li>Disk Size: {{ machine.disk }} </li>
                           </ul>  
