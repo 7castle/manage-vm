@@ -12,7 +12,7 @@ class VM_Form(forms.ModelForm):
 
   class Meta:
     model = VM
-    exclude = ['user','vmid','ip','storage']
+    exclude = ['user','vmid','ip','storage','status']
     labels = {
       'hostname': 'Name',
       'memory': 'Memory (GB)',
