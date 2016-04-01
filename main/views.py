@@ -14,6 +14,10 @@ def machine(request, machine_name):
     machine = get_object_or_404(VM, hostname=machine_name) 
     return render(request,'machine.html',{'machine': machine})
 
+def admin_machines(request):
+    machines = VM.objects.all()
+    return render(request,'manage.html',{'machines': machines})
+
 def create_vm(request):
   if request.method == 'POST':
     vm_form = VM_Form(data=request.POST)
