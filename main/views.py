@@ -23,7 +23,7 @@ def create_vm(request):
       vm.user = request.user
       vm.save()
 
-      proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=True)
+      proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
 
       node = proxmox.nodes('test_node')
 
