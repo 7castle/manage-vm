@@ -72,7 +72,6 @@ class Disk(forms.Form):
 
 class CPU(forms.Form):
     cores = forms.IntegerField(label='Cores',min_value=1,max_value=500,widget=forms.NumberInput(attrs={'value': 4}))
-    numa = forms.BooleanField(label='Numa',initial=False)
 
 class Network(forms.Form):
     bridge = forms.ChoiceField(label='Bridge')

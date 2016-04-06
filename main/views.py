@@ -18,25 +18,25 @@ def create_vm(request):
     net_form = Network(data=request.POST)
 
     if vm_form.is_valid() and drive_form.is_valid() and disk_form.is_valid() and cpu_form.is_valid() and net_form.is_valid():
+        
+        proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
 
-      vm = vm_form.save(commit=False)
-      vm.user = request.user
-      vm.save()
-
-      proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
-
-      node = proxmox.nodes('test_node')
+        node = proxmox.nodes(vm_form.cleaned_data['node'])
 
       # [TESTING] Create openvz container 
-      node.openvz.create(vmid=202,
-                        hostname=vm_form.cleaned_data['hostname'],
-                        storage='local',
+        vm_id = int(proxmox.cluster.nextid.get())
+        testdata = node.qemu.create(vmid=vm_id,
+                        name=vm_form.cleaned_data['name'],
+                        ostype=vm_form.cleaned_data['ostype'],
+                        ide2=drive_form.cleaned_data['iso']+',media=cdrom',
+                        ide0=disk_form.cleaned_data['storage']+':'+str(disk_form.cleaned_data['size'])+',format='+disk_form.cleaned_data['disk_format'],
+                        sockets=1,
+                        cores=cpu_form.cleaned_data['cores'],
+                        numa=0,
                         memory=vm_form.cleaned_data['memory'],
-                        swap=vm_form.cleaned_data['swap'],
-                        cpus=vm_form.cleaned_data['cores'],
-                        disk=vm_form.cleaned_data['disk'],
-                        password=secrets.PROXMOX_PASS,
-                        ip_address='0.0.0.0')
+                        net0=net_form.cleaned_data['model']+',bridge='+net_form.cleaned_data['bridge'])
+ 
+        print(str(testdata))
 
   else:
     vm_form = VM_Form()
