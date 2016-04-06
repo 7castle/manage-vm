@@ -2,32 +2,27 @@ from django import forms
 
 from .models import *
 
-def get_templates():
-  return []
+class VM_Form(forms.Form):
+    node = forms.CharField(label='Node', max_length=40,widget=forms.TextInput(attrs={'placeholder': 'Node'}))
+    name = forms.CharField(label='Name', max_length=50,widget=forms.TextInput(attrs={'placeholder': 'Name of machine'}))
+    ostype = forms.ChoiceField(label='Operating System')
+    memory = forms.IntegerField(label='Memory (MB)',min_value=32,max_value=100000,widget=forms.NumberInput(attrs={'value': 4000}))
 
-class VM_Form(forms.ModelForm):
-  def __init__(self, *args, **kwargs):
-    super(VM_Form, self).__init__(*args, **kwargs)
-    self.fields['template'] = forms.ChoiceField(choices=get_templates())
+class CD_DVD(forms.Form):
+    storage = forms.ChoiceField(label='Storage')
+    iso = forms.ChoiceField(label='ISO Image')
 
-  class Meta:
-    model = VM
-    exclude = ['user','vmid','ip','storage']
-    labels = {
-      'hostname': 'Name',
-      'memory': 'Memory (GB)',
-      'swap': 'Swap (GB)',
-      'disk': 'Disk Size (GB)',
-    }
-    widgets = {
-      'hostname': forms.TextInput(attrs={'placeholder': 'Hostname of Machine'}),
-      'description': forms.Textarea(attrs={
-                          'placeholder': 'Description of Machine',
-                          'rows': 3,
-                        }
-                      ),
-      'memory': forms.NumberInput(attrs={'value': 1}),
-      'cores': forms.NumberInput(attrs={'value': 1}),
-      'swap': forms.NumberInput(attrs={'value': 1}),
-      'disk': forms.NumberInput(attrs={'value': 1}),
-    }
+class Disk(forms.Form):
+    device = forms.ChoiceField(label='Bus/Device')
+    storage = forms.ChoiceField(label='Storage')
+    size = forms.IntegerField(label='Disk size (GB)',min_value=1,max_value=10000,widget=forms.NumberInput(attrs={'value': 100}))
+    disk_format = forms.ChoiceField(label='Format')
+
+class CPU(forms.Form):
+    cores = forms.IntegerField(label='Cores',min_value=1,max_value=500,widget=forms.NumberInput(attrs={'value': 4}))
+    numa = forms.BooleanField(label='Numa')
+
+class Network(forms.Form):
+    bridge = forms.ChoiceField(label='Bridge')
+    firewall = forms.BooleanField(label='Firewall')
+    model = forms.ChoiceField(label='Model')

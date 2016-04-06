@@ -12,8 +12,12 @@ def manage(request):
 def create_vm(request):
   if request.method == 'POST':
     vm_form = VM_Form(data=request.POST)
+    drive_form = CD_DVD(data=request.POST)
+    disk_form = Disk(data=request.POST)
+    cpu_form = CPU(data=request.POST)
+    net_form = Network(data=request.POST)
 
-    if vm_form.is_valid():
+    if vm_form.is_valid() and drive_form.is_valid() and disk_form.is_valid() and cpu_form.is_valid() and net_form.is_valid():
 
       vm = vm_form.save(commit=False)
       vm.user = request.user
@@ -36,5 +40,9 @@ def create_vm(request):
 
   else:
     vm_form = VM_Form()
+    drive_form = CD_DVD()
+    disk_form = Disk()
+    cpu_form = CPU()
+    net_form = Network()
   
-  return render(request, 'create.html',{'vm_form': vm_form,})
+  return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
