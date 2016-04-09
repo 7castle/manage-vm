@@ -23,7 +23,6 @@ def create_vm(request):
 
         node = proxmox.nodes(vm_form.cleaned_data['node'])
 
-      # [TESTING] Create openvz container 
         vm_id = int(proxmox.cluster.nextid.get())
         testdata = node.qemu.create(vmid=vm_id,
                         name=vm_form.cleaned_data['name'],
@@ -36,7 +35,6 @@ def create_vm(request):
                         memory=vm_form.cleaned_data['memory'],
                         net0=net_form.cleaned_data['model']+',bridge='+net_form.cleaned_data['bridge'])
  
-        print(str(testdata))
 
   else:
     vm_form = VM_Form()
