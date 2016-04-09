@@ -41,11 +41,18 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                                {{ machine.hostname }}
+                          <a href="/machine/{{machine.hostname}}">{{ machine.hostname }}</a>
                         </div>
                         <div class="panel-body">
                           <p> {{machine.description }} </p>
-                        </div>
+                          <ul>
+                            <li>IP: {{machine.ip}} </li>
+                            <li>Memory: {{ machine.memory }} </li>
+                            <li>Swap: {{machine.swap}} </li>
+                            <li>Cores: {{ machine.cores }} </li>
+                            <li>Disk Size: {{ machine.disk }} </li>
+                          </ul>  
+                      </div>
                     </div>
                 </div>
                 {% if forloop.counter|divisibleby:3 %}

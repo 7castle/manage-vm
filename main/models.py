@@ -6,7 +6,7 @@ class VM(models.Model):
   vmid = models.PositiveIntegerField()   
   name = models.CharField(max_length=60)
   nodename = models.CharField(max_length=60)
-
+  
   def __unicode__(self):
     return u'%s' % self.name
 
