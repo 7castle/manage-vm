@@ -35,10 +35,11 @@ def create_vm(request):
                         name=vm_form.cleaned_data['name'],
                         ostype=vm_form.cleaned_data['ostype'],
                         ide2=drive_form.cleaned_data['iso']+',media=cdrom',
-                        ide0=disk_form.cleaned_data['storage']+':'+str(disk_form.cleaned_data['size'])+',format='+disk_form.cleaned_data['disk_format'],
+                        ide0='ceph_pool:'+str(disk_form.cleaned_data['size'])+',format='+disk_form.cleaned_data['disk_format'],
                         sockets=1,
                         cores=cpu_form.cleaned_data['cores'],
                         numa=0,
+                        pool=secrets.PROXMOX_POOL,
                         memory=vm_form.cleaned_data['memory'],
                         net0=net_form.cleaned_data['model']+',bridge='+net_form.cleaned_data['bridge'])
   
