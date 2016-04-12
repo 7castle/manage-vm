@@ -6,32 +6,32 @@ from .models import *
 from django.shortcuts import get_object_or_404
 
 def index(request):
-  return render(request, 'index.html')
+    return render(request, 'index.html')
 
 def manage(request):
-  machines = VM.objects.all()
-  return render(request,'manage.html',{'machines': machines})
+    machines = VM.objects.all()
+    return render(request,'manage.html',{'machines': machines})
 
 def machine(request, machine_name):
     machine = get_object_or_404(VM, hostname=machine_name) 
     return render(request,'machine.html',{'machine': machine})
 
 def create_vm(request):
-  if request.method == 'POST':
-    vm_form = VM_Form(data=request.POST)
-    drive_form = CD_DVD(data=request.POST)
-    disk_form = Disk(data=request.POST)
-    cpu_form = CPU(data=request.POST)
-    net_form = Network(data=request.POST)
+    vm_form = VM_Form(data=request.POST or None)
+    drive_form = CD_DVD(data=request.POST or None)
+    disk_form = Disk(data=request.POST or None)
+    cpu_form = CPU(data=request.POST or None)
+    net_form = Network(data=request.POST or None)
 
-    if vm_form.is_valid() and drive_form.is_valid() and disk_form.is_valid() and cpu_form.is_valid() and net_form.is_valid():
+    if request.method == 'POST':
+        if vm_form.is_valid() and drive_form.is_valid() and disk_form.is_valid() and cpu_form.is_valid() and net_form.is_valid():
         
-        proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
+            proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
 
-        node = proxmox.nodes(vm_form.cleaned_data['node'])
+            node = proxmox.nodes(vm_form.cleaned_data['node'])
         
-        vm_id = int(proxmox.cluster.nextid.get())
-        testdata = node.qemu.create(vmid=vm_id,
+            vm_id = int(proxmox.cluster.nextid.get())
+            testdata = node.qemu.create(vmid=vm_id,
                         name=vm_form.cleaned_data['name'],
                         ostype=vm_form.cleaned_data['ostype'],
                         ide2=drive_form.cleaned_data['iso']+',media=cdrom',
@@ -41,13 +41,5 @@ def create_vm(request):
                         numa=0,
                         memory=vm_form.cleaned_data['memory'],
                         net0=net_form.cleaned_data['model']+',bridge='+net_form.cleaned_data['bridge'])
- 
-
-  else:
-    vm_form = VM_Form()
-    drive_form = CD_DVD()
-    disk_form = Disk()
-    cpu_form = CPU()
-    net_form = Network()
   
-  return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
+    return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
