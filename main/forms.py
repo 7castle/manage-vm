@@ -22,6 +22,14 @@ NET_MODELS = (
         ('rtl8139','Realtek RTL8139'),
         ('vmxnet3','VMWare vmxnet3'),
     )
+STORAGE = (
+        ('ceph_pool','ceph_pool'),
+        ('local','local'),
+    )
+BRIDGE = (
+        ('vmbr0','vmbr0'),
+        ('vmbr1','vmbr1'),
+    )
 
 class VM_Form(forms.Form):
     node = forms.ChoiceField(label='Node')
@@ -48,11 +56,9 @@ class CD_DVD(forms.Form):
         proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
         for stor in proxmox.storage.get():
             storage.append(stor['storage'])
-        for node in proxmox.nodes.get():
-            for sotr in proxmox.nodes(node['node']).storage.get():
-                for item in proxmox.nodes(node['node']).storage(stor['storage']).content.get():
-                    if item['content'] == 'iso':
-                        isos.append(item['volid'])
+        for item in proxmox.nodes('proxmox01').storage('NFS-ISOs').content.get():
+            isos.append(item['volid'])
+        
         self.fields['storage'] = forms.ChoiceField(choices=[(stor,stor) for stor in storage])
         self.fields['iso'] = forms.ChoiceField(choices=[(iso,iso) for iso in isos])
 
@@ -67,7 +73,7 @@ class Disk(forms.Form):
         storage = []
         for stor in proxmox.storage.get():
             storage.append(stor['storage'])
-        self.fields['storage'] = forms.ChoiceField(choices=[(stor,stor) for stor in storage])
+        self.fields['storage'] = forms.ChoiceField(choices=STORAGE)
         self.fields['disk_format'] = forms.ChoiceField(choices=DISK_FORMAT)
 
 class CPU(forms.Form):
@@ -79,11 +85,5 @@ class Network(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(Network, self).__init__(*args, **kwargs)
-        proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
-        bridges = []
-        for node in proxmox.nodes.get():
-            for net in proxmox.nodes(node['node']).network.get():
-                if net['type'] == 'bridge':
-                    bridges.append(net['iface'])
-        self.fields['bridge'] = forms.ChoiceField(choices=[(bridge,bridge) for bridge in bridges])
+        self.fields['bridge'] = forms.ChoiceField(choices=BRIDGE)
         self.fields['model'] = forms.ChoiceField(choices=NET_MODELS)

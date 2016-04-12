@@ -29,7 +29,7 @@ def create_vm(request):
         proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
 
         node = proxmox.nodes(vm_form.cleaned_data['node'])
-
+        
         vm_id = int(proxmox.cluster.nextid.get())
         testdata = node.qemu.create(vmid=vm_id,
                         name=vm_form.cleaned_data['name'],
