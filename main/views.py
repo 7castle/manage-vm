@@ -3,6 +3,7 @@ from .forms import *
 from proxmoxer import ProxmoxAPI
 from managevm import secrets
 from .models import *
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
 def index(request):
@@ -13,7 +14,7 @@ def manage(request):
     return render(request,'manage.html',{'machines': machines})
 
 def machine(request, machine_name):
-    machine = get_object_or_404(VM, hostname=machine_name) 
+    machine = get_object_or_404(VM, name=machine_name) 
     return render(request,'machine.html',{'machine': machine})
 
 def create_vm(request):
@@ -29,7 +30,6 @@ def create_vm(request):
             proxmox = ProxmoxAPI(secrets.PROXMOX_HOST,user=secrets.PROXMOX_USER,password=secrets.PROXMOX_PASS,verify_ssl=False)
 
             node = proxmox.nodes(vm_form.cleaned_data['node'])
-        
             vm_id = int(proxmox.cluster.nextid.get())
             testdata = node.qemu.create(vmid=vm_id,
                         name=vm_form.cleaned_data['name'],
@@ -42,5 +42,8 @@ def create_vm(request):
                         pool=secrets.PROXMOX_POOL,
                         memory=vm_form.cleaned_data['memory'],
                         net0=net_form.cleaned_data['model']+',bridge='+net_form.cleaned_data['bridge'])
-  
+            # Testing
+            use = User.objects.get_or_create(username='test')
+            vm = VM(user=use[0],vmid=vm_id,name=vm_form.cleaned_data['name'],nodename=vm_form.cleaned_data['node'])
+            vm.save()
     return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
