@@ -16,6 +16,14 @@
 
     <!-- Custom Fonts -->
     <link href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+    
+    <!-- jQuery -->
+    <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+    
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+
+    <script src="{% static "js/request.js" %}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,6 +35,33 @@
     
     {% block content %}
         <div id="page-wrapper">
+				<!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Request VM</h4>
+              </div>
+              <div class="modal-body">
+                <p>You have requested a virtual machine with too many resources.</p>
+                <p>You may request this virtual machine or use less resources.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="request_btn" type="button" class="btn btn-primary">Request Machine</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+      {% if request_vm %}
+      <script>
+        $('#myModal').modal('show');
+      </script>
+      {% endif %}
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Create Virtual Machine</h1>
@@ -41,7 +76,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                   <h2>VM Information </h2>
-                                    <form action="/create/" method="post" role="form">
+                                    <form id="vmForm" action="/create/" method="post" role="form">
                                         {% csrf_token %}
                                         {{ vm_form|bootstrap }}
                                         <h2> Drive </h2>
@@ -71,12 +106,7 @@
         <!-- /#page-wrapper -->
     {% endblock %}
     {% block js-bottom %}
-    <!-- jQuery -->
-    <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-
+    
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{% static "bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
 
