@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import *
 from proxmoxer import ProxmoxAPI
 from managevm import secrets
@@ -56,4 +56,5 @@ def create_vm(request):
             use = User.objects.get_or_create(username='test')
             vm = VM(user=use[0],vmid=vm_id,name=vm_form.cleaned_data['name'],nodename=vm_form.cleaned_data['node'])
             vm.save()
+            return redirect('/manage/') 
     return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
