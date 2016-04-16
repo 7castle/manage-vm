@@ -5,6 +5,7 @@ from managevm import secrets
 from .models import *
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+import ldap
 
 def index(request):
     return render(request, 'index.html')
@@ -34,6 +35,8 @@ def create_vm(request):
             if '_request' in request.POST:
                 # Request VM
                 print('VM REQUEST')
+                request_vm(vm_form, drive_form, disk_form, cpu_form, net_form)
+
             if check_limits(vm_form.cleaned_data['memory'],cpu_form.cleaned_data['cores'],disk_form.cleaned_data['size']):
                 return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form,'request_vm': True})
 
@@ -58,3 +61,8 @@ def create_vm(request):
             vm.save()
             return redirect('/manage/') 
     return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
+
+def request_vm(vm, drive, disk, cpu, net):
+    ldap_conn = ldap.initialize(secrets.LDAP_SERVER)
+    ldap_conn.simple_bind_s(secrets.LDAP_USER, secrets.LDAP_PASS)
+
