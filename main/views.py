@@ -5,6 +5,7 @@ from managevm import secrets
 from .models import *
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
 import ldap
 
 def index(request):
@@ -36,6 +37,7 @@ def create_vm(request):
                 # Request VM
                 use = User.objects.get_or_create(username='test')
                 request_vm(vm_form, drive_form, disk_form, cpu_form, net_form,use[0])
+                return redirect('/')
 
             if check_limits(vm_form.cleaned_data['memory'],cpu_form.cleaned_data['cores'],disk_form.cleaned_data['size']):
                 return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form,'request_vm': True})
@@ -68,7 +70,7 @@ def request_vm(vm, drive, disk, cpu, net, use):
                         node = vm.cleaned_data['node'],
                         name=vm.cleaned_data['name'],
                         ostype = vm.cleaned_data['ostype'],
-                        iso = drive.cleaned_data['ostype'],
+                        iso = drive.cleaned_data['iso'],
                         size = disk.cleaned_data['size'],
                         disk_format = disk.cleaned_data['disk_format'],
                         cores = cpu.cleaned_data['cores'],
@@ -77,9 +79,17 @@ def request_vm(vm, drive, disk, cpu, net, use):
                         bridge = net.cleaned_data['bridge'])
     request.save()
 
-    ldap_conn = ldap.initialize(secrets.LDAP_SERVER)
-    ldap_conn.simple_bind_s('uid='+secrets.LDAP_USER+'ou=Users,dc=csh,dc=rit,dc=edu', secrets.LDAP_PASS)
-    emails = get_rtp_email(ldap_conn)
+    #ldap_conn = ldap.initialize(secrets.LDAP_SERVER)
+    #ldap_conn.simple_bind_s('uid='+secrets.LDAP_USER+'ou=Users,dc=csh,dc=rit,dc=edu', secrets.LDAP_PASS)
+    #emails = get_rtp_email(ldap_conn)
+    # is_staff will denote if they want email alerts
+    rtps = Users.objects.filter(is_superuser=True,is_staff=True)
+    emails = []
+    for rtp in rtps:
+        emails.append(rtp.email)
+
+    send_mail('Virtual Machine Request',
+            use.username+' requests a virtual machine with the following resources\n'+'Name: '+vm.cleaned_data['name']+'\nNode: '+vm.cleaned_data['node']+'\nOS Type: '+vm.cleaned_data['ostype']+'\nISO: '+drive.cleaned_data['iso'],'cshmanagevm@gmail.com',emails)
 
 def get_rtp_email(ldap_c):
     members = ldap_c.search_s(group,ldap.SCOPE_SUBTREE,'cn=rtp')

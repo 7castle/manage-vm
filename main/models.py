@@ -11,7 +11,7 @@ class VM(models.Model):
     return u'%s' % self.name
 
 class VM_Request(models.Model):
-    user = models.ForeignKey(User, related_name='user', null=False)
+    user = models.ForeignKey(User, null=False)
     node = models.CharField(max_length=60)
     name = models.CharField(max_length=60)
     ostype = models.CharField(max_length=60)
