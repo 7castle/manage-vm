@@ -19,6 +19,10 @@ def machine(request, machine_name):
     machine = get_object_or_404(VM, name=machine_name) 
     return render(request,'machine.html',{'machine': machine})
 
+def pending(request):
+    machines = VM_Request.objects.all()
+    return render(request,'requests.html',{'machines': machines})
+
 def check_limits(memory, cores, size):
     limits = VM_Limits.objects.get(id=1)
     return memory > limits.memory or cores > limits.cores or size > limits.disk_size
