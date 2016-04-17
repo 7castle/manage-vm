@@ -60,9 +60,26 @@ def create_vm(request):
             vm = VM(user=use[0],vmid=vm_id,name=vm_form.cleaned_data['name'],nodename=vm_form.cleaned_data['node'])
             vm.save()
             return redirect('/manage/') 
+    
     return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
 
 def request_vm(vm, drive, disk, cpu, net):
     ldap_conn = ldap.initialize(secrets.LDAP_SERVER)
-    ldap_conn.simple_bind_s(secrets.LDAP_USER, secrets.LDAP_PASS)
+    ldap_conn.simple_bind_s('uid='+secrets.LDAP_USER+'ou=Users,dc=csh,dc=rit,dc=edu', secrets.LDAP_PASS)
+    emails = get_rtp_email(ldap_conn)
 
+def get_rtp_email(ldap_c):
+    members = ldap_c.search_s(group,ldap.SCOPE_SUBTREE,'cn=rtp')
+
+    if len(members) == 0:
+        return members
+    else:
+        member_dns = members[0][1]['member']
+        members = []
+        for member_dn in member_dns:
+            members.append(ldap_c.search_s(member_dn.decode("utf-8"),ldap.SCOPE_SUBTREE))
+
+        emails = []
+        for member in members:
+            emails.append(member[0][1]['mail'][0].decode("utf-8"))
+        return emails
