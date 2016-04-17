@@ -22,6 +22,7 @@ class VM_Request(models.Model):
     memory = models.PositiveIntegerField()
     net_model = models.CharField(max_length=60)
     bridge = models.CharField(max_length=10)
+    request_time = models.DateTimeField()
 
 class VM_Limits(models.Model):
     memory = models.PositiveIntegerField()

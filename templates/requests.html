@@ -44,13 +44,7 @@
                         </div>
                         <div class="panel-body">
                           <p> {{machine.name}} </p>
-                          <ul>
-                            <li>IP: {{machine.ip}} </li>
-                            <li>Memory: {{ machine.memory }} </li>
-                            <li>Swap: {{machine.swap}} </li>
-                            <li>Cores: {{ machine.cores }} </li>
-                            <li>Disk Size: {{ machine.disk }} </li>
-                          </ul>  
+                          <P> Machine requested on: {{machine.request_time|date:"m/d/Y"}}
                       </div>
                     </div>
                 </div>
