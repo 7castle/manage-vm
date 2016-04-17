@@ -34,8 +34,8 @@ def create_vm(request):
             
             if '_request' in request.POST:
                 # Request VM
-                print('VM REQUEST')
-                request_vm(vm_form, drive_form, disk_form, cpu_form, net_form)
+                use = User.objects.get_or_create(username='test')
+                request_vm(vm_form, drive_form, disk_form, cpu_form, net_form,use[0])
 
             if check_limits(vm_form.cleaned_data['memory'],cpu_form.cleaned_data['cores'],disk_form.cleaned_data['size']):
                 return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form,'request_vm': True})
@@ -63,7 +63,20 @@ def create_vm(request):
     
     return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
 
-def request_vm(vm, drive, disk, cpu, net):
+def request_vm(vm, drive, disk, cpu, net, use):
+    request = VM_Request(user = use,
+                        node = vm.cleaned_data['node'],
+                        name=vm.cleaned_data['name'],
+                        ostype = vm.cleaned_data['ostype'],
+                        iso = drive.cleaned_data['ostype'],
+                        size = disk.cleaned_data['size'],
+                        disk_format = disk.cleaned_data['disk_format'],
+                        cores = cpu.cleaned_data['cores'],
+                        memory = vm.cleaned_data['memory'],
+                        net_model = net.cleaned_data['model'],
+                        bridge = net.cleaned_data['bridge'])
+    request.save()
+
     ldap_conn = ldap.initialize(secrets.LDAP_SERVER)
     ldap_conn.simple_bind_s('uid='+secrets.LDAP_USER+'ou=Users,dc=csh,dc=rit,dc=edu', secrets.LDAP_PASS)
     emails = get_rtp_email(ldap_conn)
