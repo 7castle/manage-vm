@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'index.html')
 
 def manage(request):
-    machines = VM.objects.all()
+    machines = VM.objects.filter(request=False)
     return render(request,'manage.html',{'machines': machines})
 
 def machine(request, machine_name):
@@ -21,7 +21,7 @@ def machine(request, machine_name):
     return render(request,'machine.html',{'machine': machine})
 
 def requests(request):
-    machines = VM_Request.objects.all()
+    machines = VM.objects.filter(request=True)
     return render(request,'requests.html',{'machines': machines})
 
 def check_limits(memory, cores, size):
@@ -64,14 +64,27 @@ def create_vm(request):
                         net0=net_form.cleaned_data['model']+',bridge='+net_form.cleaned_data['bridge'])
             # Testing
             use = User.objects.get_or_create(username='test')
-            vm = VM(user=use[0],vmid=vm_id,name=vm_form.cleaned_data['name'],nodename=vm_form.cleaned_data['node'])
+            vm = VM(user = use[0],
+                    node = vm_form.cleaned_data['node'],
+                    name=vm_form.cleaned_data['name'],
+                    ostype = vm_form.cleaned_data['ostype'],
+                    iso = drive_form.cleaned_data['iso'],
+                    size = disk_form.cleaned_data['size'],
+                    disk_format = disk_form.cleaned_data['disk_format'],
+                    cores = cpu_form.cleaned_data['cores'],
+                    memory = vm_form.cleaned_data['memory'],
+                    net_model = net_form.cleaned_data['model'],
+                    bridge = net_form.cleaned_data['bridge'],
+                    request_time=None,
+                    request = False)
+
             vm.save()
             return redirect('/manage/') 
     
     return render(request, 'create.html',{'vm_form': vm_form,'drive_form': drive_form,'disk_form': disk_form,'cpu_form': cpu_form,'net_form': net_form})
 
 def request_vm(vm, drive, disk, cpu, net, use):
-    request = VM_Request(user = use,
+    request = VM(user = use,
                         node = vm.cleaned_data['node'],
                         name=vm.cleaned_data['name'],
                         ostype = vm.cleaned_data['ostype'],
@@ -82,7 +95,8 @@ def request_vm(vm, drive, disk, cpu, net, use):
                         memory = vm.cleaned_data['memory'],
                         net_model = net.cleaned_data['model'],
                         bridge = net.cleaned_data['bridge'],
-                        request_time=datetime.datetime.now())
+                        request_time=datetime.datetime.now(),
+                        request = True)
     request.save()
 
     #ldap_conn = ldap.initialize(secrets.LDAP_SERVER)

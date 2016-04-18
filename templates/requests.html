@@ -44,7 +44,13 @@
                         </div>
                         <div class="panel-body">
                           <p> {{machine.name}} </p>
-                          <P> Machine requested on: {{machine.request_time|date:"m/d/Y"}}
+                          <P> Machine requested on: {{machine.request_time|date:"m/d/Y"}} at {{machine.request_time|date:"H:m"}}
+                          <ul>
+                            <li>Memory (MB): {{machine.memory}} </li>
+                            <li>Cores: {{machine.cores}} </li>
+                            <li>Disk Size (GB): {{machine.size}}</li>
+                            <li>ISO: {{machine.iso}}</li>
+                          </ul>
                       </div>
                     </div>
                 </div>

@@ -41,16 +41,15 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                          <a href="/machine/{{machine.hostname}}">{{ machine.hostname }}</a>
+                          <a href="/machine/{{machine.name}}{{machine.vmid}}">{{ machine.name }}</a>
                         </div>
                         <div class="panel-body">
-                          <p> {{machine.description }} </p>
+                          <p> {{machine.name}} </p>
                           <ul>
-                            <li>IP: {{machine.ip}} </li>
-                            <li>Memory: {{ machine.memory }} </li>
-                            <li>Swap: {{machine.swap}} </li>
+                            <li>Memory (MB): {{ machine.memory }} </li>
                             <li>Cores: {{ machine.cores }} </li>
-                            <li>Disk Size: {{ machine.disk }} </li>
+                            <li>Disk Size (GB): {{ machine.size }} </li>
+                            <li>ISO: {{machine.iso}} </li>
                           </ul>  
                       </div>
                     </div>
